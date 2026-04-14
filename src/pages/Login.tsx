@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Layers } from 'lucide-react';
 
 export default function Login() {
   const [name, setName] = useState('');
