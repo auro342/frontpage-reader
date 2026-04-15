@@ -50,12 +50,13 @@ This project aggregates content from various developer blogs and news platforms 
 
 ---
 
-## 🛠️ Tech Stack
+## ⚙️ Tech Stack
 
-* **Frontend:** React + TypeScript
-* **Build Tool:** Vite
-* **Styling:** Tailwind CSS
-* **Linting:** ESLint
+* ⚛️ React
+* 🟦 TypeScript
+* ⚡ Vite
+* 🎨 Tailwind CSS
+* 🌐 REST API (RSS2JSON)
 
 ---
 
