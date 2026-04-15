@@ -1,73 +1,100 @@
-# React + TypeScript + Vite
+# 📰 FrontPage Reader
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+FrontPage Reader is a modern and responsive RSS Feed Reader web application built using React, TypeScript, and Vite, designed to provide users with a seamless experience for browsing and reading news from multiple sources in one place. The application integrates RSS feed data using external APIs (such as RSS-to-JSON converters like rss2json or similar services) to fetch and display real-time articles dynamically within the UI. The API is used in the service layer to handle asynchronous data fetching, parsing, and rendering of feed content efficiently. The project focuses on performance, clean UI, and scalability by implementing a component-based architecture, reusable UI components, and proper state management. It also includes a structured layout with a login interface and responsive design, demonstrating real-world frontend development skills such as API integration, dynamic data handling, and maintainable project structure.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🚀 Live Demo
 
-## React Compiler
+🔗 https://frontpage-reader.vercel.app
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## 📌 Features
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+* 🔐 **Login Authentication UI**
+* 📰 **RSS Feed Integration**
+* 🔄 **Real-time Feed Updates**
+* 📱 **Responsive Design (Mobile + Desktop)**
+* ⚡ **Fast Performance with Vite**
+* 🧩 **Reusable React Components**
+* 🎨 **Clean and Minimal UI**
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+---
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## 🛠️ Tech Stack
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+* **Frontend:** React + TypeScript
+* **Build Tool:** Vite
+* **Styling:** Tailwind CSS
+* **Linting:** ESLint
+
+---
+
+## 📂 Project Structure
+
+```
+frontend-reader/
+│── public/              # Static assets
+│── src/
+│   ├── components/      # Reusable UI components
+│   ├── pages/           # Application pages (Login, Feed)
+│   ├── services/        # API / RSS handling logic
+│   ├── App.tsx          # Main app component
+│   └── main.tsx         # Entry point
+│── index.html
+│── package.json
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## ⚙️ Installation & Setup
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Follow these steps to run the project locally:
+
+```bash
+# Clone the repository
+git clone https://github.com/auro342/frontpage-reader.git
+
+# Navigate into the project
+cd frontpage-reader
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
 ```
+
+---
+
+## 🧠 What I Learned
+
+* Building scalable UI using **React + TypeScript**
+* Managing components and state effectively
+* Integrating external data (RSS feeds / APIs)
+* Creating clean and responsive layouts
+* Handling project structure in a real-world frontend app
+
+---
+
+## 🚧 Future Improvements
+
+* 🔑 Add proper backend authentication
+* ⭐ Bookmark / save articles feature
+* 🌙 Dark mode support
+* 🔍 Search and filter feeds
+* 📡 Multiple RSS source support
+
+---
+
+## 👨‍💻 Author
+
+**Aurobinda Mishra**
+📧 [auromishra34@gmail.com]
+
+---
+
+## ⭐ Show Your Support
+
+If you like this project, consider giving it a ⭐ on GitHub!
