@@ -10,6 +10,17 @@ FrontPage Reader is a modern and responsive RSS Feed Reader web application buil
 
 ---
 
+
+## 📸 Screenshots
+
+### 🔐 Login Page
+![Login Page](./screenshots/login.png)
+
+### 📰 Feed Page
+![Feed Page](./screenshots/feed.png)
+
+---
+
 ## 📌 Features
 
 * 🔐 **Login Authentication UI**
