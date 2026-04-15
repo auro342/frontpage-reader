@@ -1,6 +1,10 @@
-# 📰 FrontPage Reader
+# 🚀 FrontPage Reader
+FrontPage Reader is a responsive web application that allows users to read blogs and news from multiple sources in one place.
 
-FrontPage Reader is a responsive web application where users can read news from different sources in one place. I built this project using React, TypeScript, and Vite, focusing on creating a clean and smooth user experience. The app fetches RSS feed data using the rss2json API, which converts XML feeds into JSON so they can be easily used in the frontend. I handled the data fetching and rendering in a structured way and designed reusable components to keep the code organized and scalable. The project also includes a login UI and a responsive layout, and overall it helped me understand real-world concepts like API integration, component-based design, and managing dynamic data in a frontend application.
+Built using modern frontend technologies, the application focuses on delivering a clean UI, smooth user experience, and efficient data handling.
+
+📌 Overview
+This project aggregates content from various developer blogs and news platforms using RSS feeds. Since RSS data is in XML format, the app integrates the RSS2JSON API to convert it into JSON, making it easy to consume in a React-based frontend
 
 
 ---
@@ -31,6 +35,18 @@ FrontPage Reader is a responsive web application where users can read news from 
 * ⚡ **Fast Performance with Vite**
 * 🧩 **Reusable React Components**
 * 🎨 **Clean and Minimal UI**
+
+---
+
+🔄 How It Works
+
+1. The app uses RSS feed URLs from multiple sources (e.g., blogs, tech sites).
+
+2. These feeds provide data in XML format.
+
+3. The RSS2JSON API converts XML → JSON.
+
+4. The frontend fetches this JSON and renders articles dynamically.
 
 ---
 
