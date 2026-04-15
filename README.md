@@ -3,7 +3,7 @@ FrontPage Reader is a responsive web application that allows users to read blogs
 
 Built using modern frontend technologies, the application focuses on delivering a clean UI, smooth user experience, and efficient data handling.
 
-📌 Overview
+# 📌 Overview
 This project aggregates content from various developer blogs and news platforms using RSS feeds. Since RSS data is in XML format, the app integrates the RSS2JSON API to convert it into JSON, making it easy to consume in a React-based frontend
 
 
