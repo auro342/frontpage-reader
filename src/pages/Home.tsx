@@ -1,7 +1,8 @@
 import FeedCard from "../components/FeedCard";
 import { useState, useEffect } from "react";
-import { Search, Plus, Bookmark, CheckCircle2, LayoutList, LayoutGrid, ListFilter, RefreshCw, Loader2, LogOut } from "lucide-react";
+import { Search, Plus, Bookmark, CheckCircle2, LayoutList, LayoutGrid, ListFilter, RefreshCw, Loader2, LogOut, Menu, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+
 // List of real feeds we'll fetch
 const RSS_FEEDS = [
   { source: "Smashing Magazine", category: "Design", url: "https://www.smashingmagazine.com/feed/" },
@@ -30,13 +31,15 @@ const CATEGORY_COLORS = [
 
 function Home() {
   const [saved, setSaved] = useState<any[]>([]);
-  const [view, setView] = useState("All"); // Can be 'All', 'Saved', or a category name
+  const [view, setView] = useState("All"); 
   const [search, setSearch] = useState("");
   const [articles, setArticles] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const navigate = useNavigate();
 
-  // Load saved articles from local storage on mount
   useEffect(() => {
     const data = localStorage.getItem("savedArticles");
     if (data) setSaved(JSON.parse(data));
@@ -51,7 +54,6 @@ function Home() {
         const data = await response.json();
         
         return data.items.slice(0, 10).map((item: any, index: number) => {
-          // compute a relative time text
           const pubDate = new Date(item.pubDate);
           const now = new Date();
           const hoursDiff = Math.abs(now.getTime() - pubDate.getTime()) / 36e5;
@@ -65,12 +67,10 @@ function Home() {
             timeStr = `${Math.floor(hoursDiff / 24)}d ago`;
           }
 
-          // simple description cleaner (strip html tags)
           let plainDescription = item.description.replace(/<[^>]+>/g, '').trim();
-          // unescape common HTML entities
           plainDescription = plainDescription.replace(/&nbsp;/g, ' ').replace(/&quot;/g, '"').replace(/&#8217;/g, "'").replace(/&amp;/g, '&');
-          if (plainDescription.length > 200) {
-              plainDescription = plainDescription.substring(0, 200) + '...';
+          if (plainDescription.length > 150) {
+              plainDescription = plainDescription.substring(0, 150) + '...';
           }
 
           return {
@@ -101,7 +101,6 @@ function Home() {
     }
   };
 
-  // Fetch articles on mount
   useEffect(() => {
     fetchFeeds();
   }, []);
@@ -120,7 +119,6 @@ function Home() {
     });
   };
 
-  // Setup filtering mechanism based on view and search string
   let baseData = articles;
   if (view === "Saved") {
     baseData = saved;
@@ -133,35 +131,41 @@ function Home() {
   );
 
   return (
-    <div className="h-screen flex flex-col bg-white text-gray-900 font-sans">
+    <div className="h-[100dvh] flex flex-col bg-white text-gray-900 font-sans">
       {/* NAVBAR */}
-      <div className="h-14 border-b border-gray-100 flex items-center justify-between px-6 shrink-0">
-        <div className="flex items-center">
+      <div className="h-14 border-b border-gray-100 flex items-center justify-between px-4 md:px-6 shrink-0 z-20 relative bg-white">
+        <div className="flex items-center gap-3 md:gap-4">
+          <button 
+            className="md:hidden p-1 text-gray-500 hover:text-gray-900 focus:outline-none"
+            onClick={() => setSidebarOpen(true)}
+          >
+            <Menu className="w-5 h-5" />
+          </button>
+
           <div className="flex items-center gap-2 cursor-pointer">
-            <div className="w-6 h-6 bg-[#3b82f6] rounded flex items-center justify-center relative shadow-sm">
+            <div className="w-6 h-6 bg-[#3b82f6] rounded flex items-center justify-center relative shadow-sm shrink-0">
               <div className="w-[10px] h-[10px] bg-white rounded-sm absolute left-[3px] top-[3px]"></div>
               <div className="w-[10px] h-[10px] border-2 border-white bg-[#3b82f6] rounded-sm absolute left-[9px] top-[9px]"></div>
             </div>
             <h1 className="font-bold text-[16px] tracking-tight">Frontpage</h1>
           </div>
 
-          <div className="flex gap-6 text-[14px] ml-10">
-            <span className="font-semibold text-gray-900 cursor-pointer">
-              Feed
-            </span>
+          <div className="hidden lg:flex gap-6 text-[14px] ml-10">
+            <span className="font-semibold text-gray-900 cursor-pointer">Feed</span>
             <span className="text-gray-400 hover:text-gray-600 cursor-pointer font-medium">Digest</span>
             <span className="text-gray-400 hover:text-gray-600 cursor-pointer font-medium">Discover</span>
           </div>
         </div>
 
         {/* RIGHT SIDE */}
-        <div className="flex items-center gap-3">
-          <div className="relative flex items-center">
+        <div className="flex items-center gap-2 md:gap-3">
+          {/* SEARCH DESKTOP */}
+          <div className="relative hidden md:flex items-center">
             <Search className="w-3.5 h-3.5 text-gray-300 absolute left-3" />
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="bg-white border border-gray-200 rounded-md pl-9 pr-8 py-1.5 text-[13px] w-64 outline-none placeholder:text-gray-300 focus:border-gray-300 focus:ring-1 focus:ring-gray-200 transition-all font-medium"
+              className="bg-white border border-gray-200 rounded-md pl-9 pr-8 py-1.5 text-[13px] w-48 lg:w-64 outline-none placeholder:text-gray-300 focus:border-gray-300 focus:ring-1 focus:ring-gray-200 transition-all font-medium"
               placeholder="Search articles..."
             />
             <div className="absolute right-2 flex items-center">
@@ -169,28 +173,63 @@ function Home() {
             </div>
           </div>
 
-          <button className="w-8 h-8 flex items-center justify-center text-gray-400 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors ml-1">
+          {/* SEARCH MOBILE TOGGLE & INPUT OVERLAY */}
+          <button 
+             onClick={() => setIsMobileSearchOpen(!isMobileSearchOpen)}
+             className="md:hidden w-8 h-8 flex items-center justify-center text-gray-500 hover:bg-gray-100 rounded-md focus:outline-none"
+          >
+             <Search className="w-4 h-4" />
+          </button>
+          
+          {isMobileSearchOpen && (
+             <div className="absolute top-14 left-0 right-0 p-3 bg-white border-b border-gray-100 z-50 md:hidden flex items-center gap-2 shadow-lg animate-in slide-in-from-top-2">
+                 <div className="relative flex-1">
+                     <Search className="w-4 h-4 text-gray-400 absolute left-3 top-2.5" />
+                     <input
+                         autoFocus
+                         value={search}
+                         onChange={(e) => setSearch(e.target.value)}
+                         className="w-full bg-gray-50 border border-gray-200 rounded-md pl-9 pr-3 py-2 text-[13px] outline-none focus:ring-2 focus:ring-blue-100 transition-all"
+                         placeholder="Search articles..."
+                     />
+                 </div>
+                 <button onClick={() => { setIsMobileSearchOpen(false); setSearch(""); }} className="text-[12px] font-medium text-gray-500 hover:text-gray-900 px-2 py-2">
+                     Cancel
+                 </button>
+             </div>
+          )}
+
+          <button className="hidden md:flex w-8 h-8 items-center justify-center text-gray-400 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors ml-1">
             <Plus className="w-4 h-4" />
           </button>
 
+          {/* AVATAR & DROPDOWN */}
           <div className="relative group flex items-center">
-            <div className="w-8 h-8 bg-[#6366f1] text-white flex items-center justify-center rounded-full text-[13px] font-semibold ml-2 cursor-pointer ring-2 ring-white shadow-sm">
-              {localStorage.getItem("user")?.charAt(0).toUpperCase() || "Guest".charAt(0)}
+            <div 
+              onClick={() => setIsProfileOpen(!isProfileOpen)}
+              className="w-8 h-8 bg-[#6366f1] text-white flex items-center justify-center rounded-full text-[13px] font-semibold ml-1 cursor-pointer ring-2 ring-white shadow-sm shrink-0 select-none"
+            >
+              {localStorage.getItem("user")?.charAt(0).toUpperCase() || "G"}
             </div>
             
-            <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-[0_8px_30px_rgb(0,0,0,0.12)] py-1.5 border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 transform origin-top-right scale-95 group-hover:scale-100">
-              <div className="px-4 py-2 border-b border-gray-100 mb-1 leading-tight">
-                <p className="text-[12px] text-gray-500">Signed in as</p>
+            {isProfileOpen && (
+               <div className="fixed inset-0 z-40 md:hidden" onClick={() => setIsProfileOpen(false)}></div>
+            )}
+
+            <div className={`absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-[0_8px_30px_rgb(0,0,0,0.12)] py-1.5 border border-gray-100 z-50 transform origin-top-right transition-all duration-200 ${isProfileOpen ? 'opacity-100 visible scale-100' : 'opacity-0 invisible scale-95 md:group-hover:opacity-100 md:group-hover:visible md:group-hover:scale-100'}`}>
+              <div className="px-4 py-3 border-b border-gray-100 mb-1 leading-tight">
+                <p className="text-[11px] font-semibold tracking-wider uppercase text-gray-400 mb-1">Signed in as</p>
                 <p className="text-[14px] font-bold text-gray-900 truncate">
                   {localStorage.getItem("user") || "Guest"}
                 </p>
               </div>
               <button 
                 onClick={() => {
+                  setIsProfileOpen(false);
                   localStorage.removeItem("user");
                   navigate("/login");
                 }}
-                className="w-full text-left flex items-center gap-2 px-4 py-2 text-[13px] font-bold text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors"
+                className="w-full text-left flex items-center gap-2 px-4 py-2.5 text-[13px] font-bold text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors"
               >
                 <LogOut className="w-4 h-4" />
                 Sign out
@@ -201,13 +240,34 @@ function Home() {
       </div>
 
       {/* MAIN */}
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1 overflow-hidden relative">
+      
+        {/* MOBILE OVERLAY */}
+        {sidebarOpen && (
+          <div 
+            className="fixed inset-0 bg-black/30 z-30 md:hidden transition-opacity"
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
+
         {/* SIDEBAR */}
-        <div className="w-64 bg-white border-r border-gray-100 px-4 py-6 overflow-y-auto text-sm shrink-0 flex flex-col justify-between">
+        <div className={`
+          absolute z-40 top-0 left-0 h-full w-[260px] bg-white border-r border-gray-100 px-4 py-5 overflow-y-auto text-sm shrink-0 flex flex-col justify-between
+          transform transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]
+          ${sidebarOpen ? "translate-x-0 shadow-2xl" : "-translate-x-full"}
+          md:relative md:translate-x-0 md:shadow-none
+        `}>
           <div>
+            <div className="flex items-center justify-between md:hidden mb-4 px-2 text-gray-500">
+                <span className="font-semibold text-gray-900 text-xs tracking-wider uppercase">Menu</span>
+                <button onClick={() => setSidebarOpen(false)} className="p-1 hover:bg-gray-100 rounded-md">
+                    <X className="w-4 h-4" />
+                </button>
+            </div>
+
             <div className="space-y-0.5">
               <div
-                onClick={() => setView("All")}
+                onClick={() => { setView("All"); setSidebarOpen(false); }}
                 className={`flex justify-between items-center px-3 py-2.5 rounded-md cursor-pointer transition ${
                   view === "All"
                     ? "bg-[#f0f6ff] text-[#2563eb]"
@@ -224,7 +284,7 @@ function Home() {
               </div>
 
               <div
-                onClick={() => setView("Saved")}
+                onClick={() => { setView("Saved"); setSidebarOpen(false); }}
                 className={`flex justify-between items-center px-3 py-2.5 rounded-md cursor-pointer transition ${
                   view === "Saved"
                     ? "bg-[#f0f6ff] text-[#2563eb]"
@@ -245,14 +305,13 @@ function Home() {
 
             <div className="space-y-0.5">
               {CATEGORY_COLORS.map((cat) => {
-                // Calculate real counts for functional feeds
                 const count = articles.filter(a => a.category === cat.name || a.source === cat.name).length;
-                if (count === 0 && !loading) return null; // Hide categories with 0 items for cleanliness
+                if (count === 0 && !loading) return null;
 
                 return (
                   <div
                     key={cat.name}
-                    onClick={() => setView(cat.name)}
+                    onClick={() => { setView(cat.name); setSidebarOpen(false); }}
                     className={`flex justify-between items-center px-3 py-1.5 rounded-md cursor-pointer group transition ${
                       view === cat.name ? "bg-gray-100" : "hover:bg-gray-50"
                     }`}
@@ -275,10 +334,11 @@ function Home() {
         </div>
 
         {/* FEED */}
-        <div className="flex-1 overflow-y-auto flex bg-white border-l border-gray-100 shadow-[inset_1px_0_0_rgba(0,0,0,0.02)]">
-          <div className="flex-1 max-w-[950px]">
-            <div className="px-10 py-8">
-              <div className="flex justify-between items-end mb-6">
+        <div className="flex-1 overflow-y-auto flex bg-white border-l border-gray-100 shadow-[inset_1px_0_0_rgba(0,0,0,0.02)] w-full">
+          <div className="flex-1 w-full max-w-[950px] mx-auto md:mx-0">
+            <div className="px-5 md:px-10 py-6 md:py-8">
+              
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end mb-6 gap-4">
                 <div className="flex items-baseline gap-3">
                   <h2 className="text-[22px] font-bold text-gray-900 tracking-tight">
                     {view === "All" ? "All Items" : view === "Saved" ? "Saved Articles" : view}
@@ -288,39 +348,34 @@ function Home() {
                   </span>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center border border-gray-200 rounded-md bg-white shadow-sm overflow-hidden">
+                <div className="flex flex-wrap items-center gap-2 md:gap-3 empty:hidden">
+                  <div className="hidden sm:flex items-center border border-gray-200 rounded-md bg-white shadow-sm overflow-hidden">
                     <button className="p-1.5 text-gray-700 bg-gray-50 border-r border-gray-200">
                       <LayoutList className="w-4 h-4" />
                     </button>
                     <button className="p-1.5 text-gray-400 hover:text-gray-600 border-r border-gray-200 hover:bg-gray-50 transition">
                       <LayoutGrid className="w-4 h-4" />
                     </button>
-                    <button className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-50 transition flex items-center justify-center">
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
-                    </button>
                   </div>
 
-                  <button className="flex items-center gap-1.5 px-3 py-1.5 border border-gray-200 rounded-md text-[12px] font-medium text-gray-600 hover:bg-gray-50 bg-white shadow-sm transition">
+                  <button className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 border border-gray-200 rounded-md text-[12px] font-medium text-gray-600 hover:bg-gray-50 bg-white shadow-sm transition">
                     <ListFilter className="w-3.5 h-3.5" />
                     Newest
                   </button>
+                  
                   <button 
                     onClick={fetchFeeds}
                     disabled={loading}
-                    className="flex items-center gap-1.5 px-3 py-1.5 border border-gray-200 rounded-md text-[12px] font-medium text-gray-600 hover:bg-gray-50 bg-white shadow-sm transition disabled:opacity-50"
+                    className="flex-1 sm:flex-none justify-center items-center gap-1.5 px-3 py-1.5 border border-gray-200 rounded-md text-[12px] font-medium text-gray-600 hover:bg-gray-50 bg-white shadow-sm transition disabled:opacity-50"
                   >
                     <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
                     Refresh
-                  </button>
-                  <button className="px-3 py-1.5 border border-gray-200 rounded-md text-[12px] font-medium text-gray-600 hover:bg-gray-50 bg-white shadow-sm transition">
-                    Mark all read
                   </button>
                 </div>
               </div>
 
               {!loading && (
-                <div className="bg-[#f0f6ff] text-[#2563eb] text-[13px] font-medium px-4 py-2.5 rounded-md mb-8 flex justify-center border border-[#e0efff] shadow-sm tracking-wide">
+                <div className="bg-[#f0f6ff] text-[#2563eb] text-[13px] font-medium px-4 py-2.5 rounded-md mb-6 md:mb-8 flex justify-center border border-[#e0efff] shadow-sm tracking-wide text-center">
                   ↑ You're caught up. All feeds are fresh!
                 </div>
               )}
