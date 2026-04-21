@@ -1,6 +1,6 @@
 import FeedCard from "../components/FeedCard";
 import { useState, useEffect } from "react";
-import { Search, Plus, Bookmark, CheckCircle2, LayoutList, LayoutGrid, ListFilter, RefreshCw, Loader2, LogOut, Menu, X } from "lucide-react";
+import { Search, Plus, Bookmark, CheckCircle2, LayoutList, LayoutGrid, ListFilter, RefreshCw, Loader2, LogOut, Menu, X, AlignJustify, Layers } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 // List of real feeds we'll fetch
@@ -143,9 +143,9 @@ function Home() {
           </button>
 
           <div className="flex items-center gap-2 cursor-pointer">
-            <div className="w-6 h-6 bg-[#3b82f6] rounded flex items-center justify-center relative shadow-sm shrink-0">
-              <div className="w-[10px] h-[10px] bg-white rounded-sm absolute left-[3px] top-[3px]"></div>
-              <div className="w-[10px] h-[10px] border-2 border-white bg-[#3b82f6] rounded-sm absolute left-[9px] top-[9px]"></div>
+            <div className="w-6 h-6 bg-[#2563eb] rounded flex items-center justify-center relative shadow-sm shrink-0">
+              <div className="w-[10px] h-[10px] bg-white rounded-sm absolute left-[4px] top-[4px]"></div>
+              <div className="w-[10px] h-[10px] border-2 border-white bg-[#2563eb] rounded-sm absolute left-[8px] top-[8px]"></div>
             </div>
             <h1 className="font-bold text-[16px] tracking-tight">Frontpage</h1>
           </div>
@@ -169,7 +169,7 @@ function Home() {
               placeholder="Search articles..."
             />
             <div className="absolute right-2 flex items-center">
-              <span className="text-[10px] px-1.5 py-[1px] border border-gray-200 text-gray-400 rounded">/</span>
+              <span className="text-[10px] px-1.5 py-[1px] border border-gray-200 bg-gray-50 text-gray-400 rounded font-sans leading-relaxed">/</span>
             </div>
           </div>
 
@@ -268,17 +268,17 @@ function Home() {
             <div className="space-y-0.5">
               <div
                 onClick={() => { setView("All"); setSidebarOpen(false); }}
-                className={`flex justify-between items-center px-3 py-2.5 rounded-md cursor-pointer transition ${
+                className={`flex justify-between items-center px-3 py-2 rounded-md cursor-pointer transition mb-1 ${
                   view === "All"
                     ? "bg-[#f0f6ff] text-[#2563eb]"
                     : "hover:bg-gray-50 text-gray-600 font-medium"
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" /></svg>
-                  <span className={view === "All" ? "font-semibold" : ""}>All Items</span>
+                  <Layers className={`w-4 h-4 flex-shrink-0 ${view === "All" ? "text-[#2563eb]" : "text-gray-400"}`} />
+                  <span className={view === "All" ? "font-bold text-[#1d4ed8]" : "font-semibold text-gray-900"}>All Items</span>
                 </div>
-                <span className={`text-[12px] ${view === "All" ? "text-[#3b82f6] font-semibold" : "text-[#3b82f6] font-semibold"}`}>
+                <span className={`text-[12px] ${view === "All" ? "text-[#2563eb] font-semibold" : "text-[#2563eb] font-semibold"}`}>
                   {loading ? '...' : articles.length}
                 </span>
               </div>
@@ -334,55 +334,70 @@ function Home() {
         </div>
 
         {/* FEED */}
-        <div className="flex-1 overflow-y-auto flex bg-white border-l border-gray-100 shadow-[inset_1px_0_0_rgba(0,0,0,0.02)] w-full">
-          <div className="flex-1 w-full max-w-[950px] mx-auto md:mx-0">
-            <div className="px-5 md:px-10 py-6 md:py-8">
-              
-              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end mb-6 gap-4">
-                <div className="flex items-baseline gap-3">
-                  <h2 className="text-[22px] font-bold text-gray-900 tracking-tight">
-                    {view === "All" ? "All Items" : view === "Saved" ? "Saved Articles" : view}
-                  </h2>
-                  <span className="text-gray-400 text-[13px] font-medium tracking-wide">
-                     {loading ? 'loading' : filteredArticles.length + ' items'}
-                  </span>
-                </div>
-
-                <div className="flex flex-wrap items-center gap-2 md:gap-3 empty:hidden">
-                  <div className="hidden sm:flex items-center border border-gray-200 rounded-md bg-white shadow-sm overflow-hidden">
-                    <button className="p-1.5 text-gray-700 bg-gray-50 border-r border-gray-200">
-                      <LayoutList className="w-4 h-4" />
-                    </button>
-                    <button className="p-1.5 text-gray-400 hover:text-gray-600 border-r border-gray-200 hover:bg-gray-50 transition">
-                      <LayoutGrid className="w-4 h-4" />
-                    </button>
-                  </div>
-
-                  <button className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 border border-gray-200 rounded-md text-[12px] font-medium text-gray-600 hover:bg-gray-50 bg-white shadow-sm transition">
-                    <ListFilter className="w-3.5 h-3.5" />
-                    Newest
-                  </button>
-                  
-                  <button 
-                    onClick={fetchFeeds}
-                    disabled={loading}
-                    className="flex-1 sm:flex-none justify-center items-center gap-1.5 px-3 py-1.5 border border-gray-200 rounded-md text-[12px] font-medium text-gray-600 hover:bg-gray-50 bg-white shadow-sm transition disabled:opacity-50"
-                  >
-                    <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
-                    Refresh
-                  </button>
-                </div>
+        <div className="flex-1 overflow-y-auto flex flex-col bg-white border-l border-gray-100 shadow-[inset_1px_0_0_rgba(0,0,0,0.02)] w-full">
+          
+          {/* HEADER AREA (Full Width Borders) */}
+          <div className="w-full">
+            <div className="w-full max-w-[1000px] px-5 sm:px-8 md:px-12 pt-6 md:pt-8 pb-4 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+              <div className="flex items-baseline gap-3">
+                <h2 className="text-[22px] font-bold text-gray-900 tracking-tight">
+                  {view === "All" ? "All Items" : view === "Saved" ? "Saved Articles" : view}
+                </h2>
+                <span className="text-gray-400 text-[13px] font-medium tracking-wide">
+                   {loading ? 'loading...' : filteredArticles.length + ' unread'}
+                </span>
               </div>
 
-              {!loading && (
-                <div className="bg-[#f0f6ff] text-[#2563eb] text-[13px] font-medium px-4 py-2.5 rounded-md mb-6 md:mb-8 flex justify-center border border-[#e0efff] shadow-sm tracking-wide text-center">
-                  ↑ You're caught up. All feeds are fresh!
+              <div className="flex flex-wrap items-center gap-2 md:gap-3 empty:hidden">
+                <div className="hidden sm:flex items-center border border-gray-200 rounded-md bg-white shadow-sm overflow-hidden text-gray-500">
+                  <button className="p-1 px-[8px] text-gray-700 bg-gray-100 border-r border-gray-200">
+                    <Menu className="w-[15px] h-[15px]" />
+                  </button>
+                  <button className="p-1 px-[8px] text-gray-400 hover:text-gray-600 border-r border-gray-200 hover:bg-gray-50 transition">
+                    <LayoutGrid className="w-[15px] h-[15px]" />
+                  </button>
+                  <button className="p-1 px-[8px] text-gray-400 hover:text-gray-600 hover:bg-gray-50 transition">
+                    <AlignJustify className="w-[15px] h-[15px]" />
+                  </button>
                 </div>
-              )}
 
-              <div className="border-b border-gray-100 pb-2 mb-2">
-                <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">LATEST</p>
+                <button className="hidden sm:flex items-center gap-1.5 px-3 py-[5px] border border-gray-200 rounded-md text-[13px] font-medium text-gray-600 hover:bg-gray-50 bg-white shadow-sm transition">
+                  <ListFilter className="w-3.5 h-3.5 text-gray-500" />
+                  Newest
+                </button>
+                
+                <button 
+                  onClick={fetchFeeds}
+                  disabled={loading}
+                  className="flex-1 sm:flex-none justify-center items-center gap-1.5 px-3 py-[5px] border border-gray-200 rounded-md text-[13px] font-medium text-gray-600 hover:bg-gray-50 bg-white shadow-sm transition disabled:opacity-50"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 text-gray-500 ${loading ? 'animate-spin' : ''}`} />
+                  Refresh
+                </button>
+
+                <button className="hidden sm:flex items-center gap-1.5 px-3 py-[5px] border border-gray-200 rounded-md text-[13px] font-medium text-gray-600 hover:bg-gray-50 bg-white shadow-sm transition">
+                  Mark all read
+                </button>
               </div>
+            </div>
+
+            <div className="w-full h-px bg-gray-100"></div>
+
+            {!loading && (
+              <>
+                <div className="w-full bg-[#f0f6ff] text-[#2563eb] text-[13px] font-medium py-2 flex justify-center tracking-wide">
+                  ↑ 5 new items since your last visit
+                </div>
+                <div className="w-full h-px bg-[#e0efff]"></div>
+              </>
+            )}
+          </div>
+
+          {/* CONTENT AREA */}
+          <div className="w-full max-w-[1000px] flex-1 px-5 sm:px-8 md:px-12 pt-6 pb-20">
+            <div className="pb-2 mb-2">
+              <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">TODAY</p>
+            </div>
 
               {loading ? (
                 <div className="flex flex-col items-center justify-center py-20 text-gray-400">
@@ -390,13 +405,14 @@ function Home() {
                   <p className="font-medium text-[13px]">Fetching latest feeds...</p>
                 </div>
               ) : filteredArticles.length > 0 ? (
-                filteredArticles.map((item) => (
+                filteredArticles.map((item, index) => (
                   <FeedCard
                     key={item.id}
                     {...item}
                     data={item}
                     onSave={handleSave}
                     isSaved={saved.some((i) => i.id === item.id)}
+                    isUnread={index < 5}
                   />
                 ))
               ) : (
@@ -406,10 +422,8 @@ function Home() {
               )}
             </div>
           </div>
-          <div className="hidden xl:block xl:flex-1 bg-white"></div>
         </div>
       </div>
-    </div>
   );
 }
 

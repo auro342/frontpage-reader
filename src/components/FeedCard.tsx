@@ -8,21 +8,26 @@ type FeedCardProps = {
   data: any;
   onSave: (article: any) => void;
   isSaved: boolean;
+  isUnread?: boolean;
 };
 
 // Map sources to colors for their fallback logos
 const sourceColors: Record<string, string> = {
-  "Smashing Magazine": "bg-[#e83e8c]",
-  "Cloudflare Blog": "bg-[#f6821f]",
-  "Simon Willison": "bg-[#111827]",
+  "Smashing Magazine": "bg-[#ef4444]",
+  "Cloudflare Blog": "bg-[#f59e0b]",
+  "Simon Willison": "bg-[#1f2937]",
+  "Josh Comeau": "bg-[#6366f1]",
+  "Figma Blog": "bg-[#111827]",
+  "web.dev": "bg-[#0ea5e9]",
+  "CSS-Tricks": "bg-[#ef4444]",
+  "Sidebar.io": "bg-[#8b5cf6]",
 };
 
-// Map categories to tag colors (bg and text)
 const categoryTagColors: Record<string, string> = {
   "Design": "bg-[#fce7f3] text-[#db2777]", // pink
   "Frontend": "bg-[#eff6ff] text-[#2563eb]", // blue
   "AI & ML": "bg-[#f3e8ff] text-[#9333ea]", // purple
-  "Backend & DevOps": "bg-[#ffedd5] text-[#d97706]", // orange
+  "Backend & DevOps": "bg-[#fef3c7] text-[#d97706]", // amber
 };
 
 function FeedCard({
@@ -35,6 +40,7 @@ function FeedCard({
   data,
   onSave,
   isSaved,
+  isUnread = true,
 }: FeedCardProps) {
   const sourceInitials = source
     .split(" ")
@@ -47,13 +53,15 @@ function FeedCard({
   const sourceColorClass = sourceColors[source] || "bg-gray-800";
 
   return (
-    <div className="flex gap-3 md:gap-4 py-4 md:py-5 border-b border-gray-100/80 hover:bg-gray-50/50 transition cursor-pointer group px-0 sm:px-2 sm:-mx-2 rounded-lg">
-      <div className="flex flex-col items-center pt-2.5 shrink-0">
-        <div className="w-1.5 h-1.5 bg-[#3b82f6] rounded-full"></div>
-      </div>
+    <div className="relative py-4 md:py-6 border-b border-gray-100/80 hover:bg-gray-50/50 transition cursor-pointer group px-0 rounded-lg">
+      {isUnread && (
+        <div className="absolute -left-4 md:-left-6 top-[22px] md:top-[28px] flex items-center justify-center">
+          <div className="w-[6px] h-[6px] bg-[#2563eb] rounded-full shadow-sm"></div>
+        </div>
+      )}
       
       <div className="flex-1 min-w-0 flex flex-col justify-center">
-        <div className="flex items-center gap-2 mb-1">
+        <div className="flex items-center gap-2 mb-1.5">
           <div className={`w-[18px] h-[18px] shrink-0 rounded flex items-center justify-center text-[10px] font-bold text-white shadow-sm ${sourceColorClass}`}>
             {sourceInitials.charAt(0)}
           </div>
@@ -74,7 +82,7 @@ function FeedCard({
 
         <div className="flex items-center mt-3">
           <span
-            className={`text-[11px] font-semibold px-2 py-0.5 rounded-md ${tagColorClass}`}
+            className={`text-[11px] font-semibold px-2 py-0.5 rounded ${tagColorClass}`}
           >
             {category}
           </span>
